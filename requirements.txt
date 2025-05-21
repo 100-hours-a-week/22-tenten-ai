@@ -31,6 +31,9 @@ filelock==3.18.0
 frozenlist==1.6.0
 fsspec==2025.3.0
 gguf==0.16.3
+google-auth==2.40.1
+google-genai==1.16.1
+googleapis-common-protos==1.70.0
 grpcio==1.71.0
 grpcio-status==1.71.0
 h11==0.16.0
@@ -65,15 +68,6 @@ ninja==1.11.1.4
 numpy==2.2.5
 openai==1.77.0
 opencv-python-headless==4.11.0.86
-opentelemetry-api==1.26.0
-opentelemetry-exporter-otlp==1.26.0
-opentelemetry-exporter-otlp-proto-common==1.26.0
-opentelemetry-exporter-otlp-proto-grpc==1.26.0
-opentelemetry-exporter-otlp-proto-http==1.26.0
-opentelemetry-proto==1.26.0
-opentelemetry-sdk==1.26.0
-opentelemetry-semantic-conventions==0.47b0
-opentelemetry-semantic-conventions-ai==0.4.6
 outlines==0.1.11
 outlines_core==0.1.26
 packaging==24.2
@@ -140,4 +134,3 @@ xxhash==3.5.0
 yarl==1.20.0
 youtube-transcript-api==1.0.3
 zipp==3.21.0
-
