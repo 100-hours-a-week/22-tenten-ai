@@ -9,6 +9,7 @@ COPY . .
 
 EXPOSE 8000
 
+## gcp env
 ENV LLM_MODE="api-prod"
 
 CMD ["sh", "-c", "python3.11 main.py --mode api-prod"]
