@@ -9,6 +9,6 @@ COPY . .
 
 EXPOSE 8000
 
-ENV LLM_MODE="api"
+ENV LLM_MODE="api-prod"
 
 CMD ["sh", "-c", "python3.11 main.py --mode api-prod"]
