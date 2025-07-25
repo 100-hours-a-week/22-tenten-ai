@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 class BaseModelLoader(ABC):
     @abstractmethod
-    def get_response(self, messages, trace, start_time=None, prompt=None, name="vllm-inference", adapter_type="youtube_summary"):
+    def get_response(self, messages, trace, start_time=None, prompt=None, name="vllm-inference", adapter_type="youtube_summary", endpoint_info=None):
         pass
 
 class ColabModelLoader(BaseModelLoader):
@@ -28,7 +28,7 @@ class ColabModelLoader(BaseModelLoader):
             "stop": self.stop
         }
 
-    def get_response(self, messages, trace, start_time=None, prompt=None, name="colab-inference", adapter_type="youtube_summary"):
+    def get_response(self, messages, trace, start_time=None, prompt=None, name="colab-inference", adapter_type="youtube_summary", endpoint_info=None):
         load_dotenv(override=True)
         base_url = os.getenv('MODEL_NGROK_URL')
 
@@ -122,9 +122,10 @@ class GCPModelLoader(BaseModelLoader):
         for adapter_name, adapter in self.lora_adapters.items():
             print(f"  - {adapter_name}: {adapter.lora_name} (ID: {adapter.lora_int_id})")
 
-    def get_response(self, messages, trace, start_time=None, prompt=None, name="vllm-inference", adapter_type="youtube_summary"):
+    def get_response(self, messages, trace, start_time=None, prompt=None, name="vllm-inference", adapter_type="youtube_summary", endpoint_info=None):
         """
         adapter_type: "youtube_summary" 또는 "social_bot"
+        endpoint_info: 로깅을 위한 추가 정보 (예: "sns_chat")
         """
         prompt = self.tokenizer.apply_chat_template(
             messages,
@@ -140,7 +141,8 @@ class GCPModelLoader(BaseModelLoader):
             if not selected_lora:
                 raise ValueError(f"Unknown adapter type: {adapter_type}")
             
-            print(f"사용 중인 LoRA 어댑터: {adapter_type} ({selected_lora.lora_name})")
+            log_endpoint_info = f" ({endpoint_info})" if endpoint_info else ""
+            print(f"사용 중인 LoRA 어댑터: {adapter_type}{log_endpoint_info} ({selected_lora.lora_name})")
 
             if adapter_type == "youtube_summary":
                 print(f"DEBUG: Youtube summary lora_request: {selected_lora.lora_name}, ID: {selected_lora.lora_int_id}")
@@ -230,7 +232,7 @@ class GeminiAPILoader(BaseModelLoader):
             base_url=base_url
         )
 
-    def get_response(self, messages, trace, start_time=None, prompt=None, name="api-inference", adapter_type="youtube_summary"):
+    def get_response(self, messages, trace, start_time=None, prompt=None, name="api-inference", adapter_type="youtube_summary", endpoint_info=None):
         start_time = time.time()
 
         try:
@@ -328,8 +330,8 @@ class ModelLoader:
         else:
             raise ValueError(f"Unsupported mode: {mode}")
 
-    def get_response(self, messages, trace, start_time=None, prompt=None, name="inference", adapter_type="youtube_summary"):
+    def get_response(self, messages, trace, start_time=None, prompt=None, name="inference", adapter_type="youtube_summary", endpoint_info=None):
         if self.loader:
-            return self.loader.get_response(messages, trace, start_time, prompt, name, adapter_type)
+            return self.loader.get_response(messages, trace, start_time, prompt, name, adapter_type, endpoint_info)
         else:
             raise RuntimeError("Model loader not initialized.")

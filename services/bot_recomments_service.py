@@ -146,7 +146,7 @@ class BotRecommentsService:
             # Generation 시작 시간
             start_time = datetime.now()
             model_response = self.model.get_response(
-                messages, trace=node_span, start_time=start_time, prompt=prompt_client, name="generate_bot_recomment", adapter_type="social_bot"
+                messages, trace=node_span, start_time=start_time, prompt=prompt_client, name="generate_bot_recomment", adapter_type="social_bot", endpoint_info="sns_recomments"
             )
             end_time = datetime.now()
 
