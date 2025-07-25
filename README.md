@@ -28,8 +28,8 @@ source ~/.bashrc
 ```
 5. 원하는 버전 설치
 ```bash
-pyenv install 3.12.3
-pyenv global 3.12.3
+pyenv install 3.11.12
+pyenv global 3.11.12
 ```
 
 ## GCP 서버 이사갔을때 main.py 정상 작동 시키기
