@@ -6,6 +6,7 @@ from models.model_loader import ModelLoader
 from langchain.memory import ConversationBufferWindowMemory # ConversationBufferWindowMemory로 변경
 import json
 from datetime import datetime
+import pytz # pytz 임포트
 from core.sse_manager import sse_manager
 import asyncio # 테스트를 위한 asyncio 임포트
 from core.prompt_templates.bot_chats_prompt import BotChatsPrompt # 프롬프트 클라이언트 임포트
@@ -83,6 +84,7 @@ class BotChatsService:
         채팅을 처리하고, 생성된 응답을 SSEManager를 통해 브로드캐스트
         """
         stream_id = request.stream_id
+        KST = pytz.timezone('Asia/Seoul') # KST 시간대 정의
         
         try:
             # [REFACTOR] User 메시지 형식을 다른 기능과 통일
@@ -110,7 +112,8 @@ class BotChatsService:
             model_response = self.model.get_response(
                 messages=messages_with_persona, 
                 trace=trace, # model_loader.get_response 시그니처에 맞게 trace 전달
-                adapter_type="social_bot"
+                adapter_type="social_bot",
+                endpoint_info="sns_chat"
             )
             ai_content = model_response.get("content", "")
 
@@ -141,8 +144,9 @@ class BotChatsService:
                 stream_data = {
                     "stream_id": stream_id,
                     "message": token + " ", # 각 단어 뒤에 공백을 붙여서 전송
-                    "timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+                    "timestamp": datetime.now(KST).strftime('%Y-%m-%dT%H:%M:%S')
                 }
+                self.logger.info(f"Broadcasting to {stream_id}: {json.dumps(stream_data, ensure_ascii=False)}")
                 await sse_manager.broadcast(f"event: stream\ndata: {json.dumps(stream_data, ensure_ascii=False)}\n\n")
                 # await asyncio.sleep(0.1) # [TEST] 스트리밍 효과를 확인하기 위한 0.1초 지연
 
@@ -151,7 +155,7 @@ class BotChatsService:
             done_data = {
                 "stream_id": stream_id,
                 "message": None,
-                "timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+                "timestamp": datetime.now(KST).strftime('%Y-%m-%dT%H:%M:%S')
             }
             await sse_manager.broadcast(f"event: done\ndata: {json.dumps(done_data, ensure_ascii=False)}\n\n")
 
@@ -164,8 +168,9 @@ class BotChatsService:
             error_data = {
                 "stream_id": stream_id,
                 "message": str(e),
-                "timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+                "timestamp": datetime.now(KST).strftime('%Y-%m-%dT%H:%M:%S')
             }
+            self.logger.error(f"Broadcasting error to {stream_id}: {json.dumps(error_data, ensure_ascii=False)}")
             await sse_manager.broadcast(f"event: error\ndata: {json.dumps(error_data, ensure_ascii=False)}\n\n")
             
             # Langfuse 트레이스 업데이트 (실패)
