@@ -1,5 +1,11 @@
 # 22-tenten-ai
+- [AI wiki 바로가기](https://github.com/100-hours-a-week/22-tenten-wiki/wiki/AI-wiki)
+- [22-tenten 프로젝트 로드맵(AI repo) 바로가기](https://github.com/orgs/100-hours-a-week/projects/202/views/2?filterQuery=repo%3A100-hours-a-week%2F22-tenten-ai)
 
+
+<br/>
+
+# For RUN
 ## python 3.11.12 변경 (pyenv 다운)
 1. python, pip 설치
 ```bash
