@@ -1,5 +1,5 @@
 # 22-tenten-ai
-- [AI wiki 바로가기](https://github.com/100-hours-a-week/22-tenten-wiki/wiki/AI-wiki)
+### [> AI wiki 바로가기](https://github.com/100-hours-a-week/22-tenten-wiki/wiki/AI-wiki)
 
 
 <br/>
